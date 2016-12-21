@@ -68,7 +68,7 @@ public class BlockItemFactory {
         ItemComponent item = builder.getComponent(ItemComponent.class);
         if (blockFamily.getArchetypeBlock().isStackable()) {
             item.stackId = "block:" + blockFamily.getURI().toString();
-            item.stackCount = (byte) quantity;
+            item.stackCount = quantity;
         }
 
         BlockItemComponent blockItem = builder.getComponent(BlockItemComponent.class);
@@ -110,7 +110,7 @@ public class BlockItemFactory {
         ItemComponent item = builder.getComponent(ItemComponent.class);
         if (blockFamily.getArchetypeBlock().isStackable()) {
             item.stackId = "block:" + blockFamily.getURI().toString();
-            item.stackCount = (byte) 1;
+            item.stackCount = 1;
         }
 
         BlockItemComponent blockItem = builder.getComponent(BlockItemComponent.class);

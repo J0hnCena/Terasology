@@ -15,7 +15,6 @@
  */
 package org.terasology.rendering.nui.layers.ingame.inventory;
 
-import com.google.common.primitives.UnsignedBytes;
 import org.terasology.utilities.Assets;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.common.DisplayNameComponent;
@@ -97,7 +96,7 @@ public abstract class ItemCell extends CoreWidget {
             public Integer get() {
                 ItemComponent itemComp = getTargetItem().getComponent(ItemComponent.class);
                 if (itemComp != null) {
-                    return UnsignedBytes.toInt(itemComp.stackCount);
+                    return itemComp.stackCount;
                 }
                 return 1;
             }

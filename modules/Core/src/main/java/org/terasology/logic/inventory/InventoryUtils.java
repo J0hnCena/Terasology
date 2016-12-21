@@ -362,7 +362,7 @@ public final class InventoryUtils {
             EntityRef fromCopy = itemFrom.copy();
 
             ItemComponent copyItem = fromCopy.getComponent(ItemComponent.class);
-            copyItem.stackCount = (byte) amount;
+            copyItem.stackCount = amount;
             fromCopy.saveComponent(copyItem);
 
             ItemComponent fromItem = itemFrom.getComponent(ItemComponent.class);
@@ -399,8 +399,8 @@ public final class InventoryUtils {
         InventoryComponent inventory = entity.getComponent(InventoryComponent.class);
         EntityRef item = inventory.itemSlots.get(slot);
         ItemComponent itemComponent = item.getComponent(ItemComponent.class);
-        byte oldSize = itemComponent.stackCount;
-        itemComponent.stackCount = (byte) newCount;
+        int oldSize = itemComponent.stackCount;
+        itemComponent.stackCount = newCount;
         item.saveComponent(itemComponent);
         entity.send(new InventorySlotStackSizeChangedEvent(slot, oldSize, newCount));
     }

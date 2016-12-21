@@ -49,7 +49,7 @@ public final class ItemComponent implements Component {
      * How many of said item are there in this stack
      */
     @Replicate(FieldReplicateType.SERVER_TO_CLIENT)
-    public byte stackCount = 1;
+    public int stackCount = 1;
 
     /**
      * Enum to hold item usage possibilities

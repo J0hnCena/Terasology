@@ -158,7 +158,9 @@ public class InventoryAuthoritySystem extends BaseComponentSystem implements Inv
 
     private boolean giveItemToSlots(EntityRef instigator, EntityRef entity, EntityRef item, List<Integer> slots) {
         int toConsume = InventoryUtils.getStackCount(item);
+        int maxStackSize = item.getComponent(ItemComponent.class).maxStackSize;
         Map<Integer, Integer> consumableCount = new LinkedHashMap<>();
+        Map<Integer, Integer> emptySlots = new LinkedHashMap<>();
 
         // First: check which slots we can merge into
         for (int slot : slots) {
@@ -170,25 +172,24 @@ public class InventoryAuthoritySystem extends BaseComponentSystem implements Inv
                 if (toAdd > 0) {
                     consumableCount.put(slot, toAdd);
                     toConsume -= toAdd;
-                    if (toConsume == 0) {
+                    if (toConsume <= 0) {
                         break;
                     }
                 }
             }
         }
 
-        int emptySlotNo = -1;
-        int emptySlotCount = toConsume;
         if (toConsume > 0) {
             // Next: check which slots are empty and figure out where to add
             for (int slot : slots) {
                 EntityRef itemAtEntity = InventoryUtils.getItemAt(entity, slot);
                 ItemComponent itemAt = itemAtEntity.getComponent(ItemComponent.class);
                 if (itemAt == null && canPutItemIntoSlot(instigator, entity, item, slot)) {
-                    emptySlotNo = slot;
-                    emptySlotCount = toConsume;
-                    toConsume = 0;
-                    break;
+                    int toAdd = Math.min(maxStackSize, toConsume);
+                    emptySlots.put(slot, toAdd); 
+                    toConsume -= maxStackSize;
+                    if(toConsume <= 0)
+                        break;
                 }
             }
         }
@@ -205,12 +206,15 @@ public class InventoryAuthoritySystem extends BaseComponentSystem implements Inv
             InventoryUtils.adjustStackSize(entity, slot, itemAt.stackCount + count);
         }
 
-        if (emptySlotNo > -1) {
-            ItemComponent sourceItem = item.getComponent(ItemComponent.class);
-            sourceItem.stackCount = (byte) emptySlotCount;
-            item.saveComponent(sourceItem);
-
-            InventoryUtils.putItemIntoSlot(entity, item, emptySlotNo);
+        if (!emptySlots.isEmpty()) {
+            for(Map.Entry<Integer, Integer> slotInfo : emptySlots.entrySet()) {
+                int slot = slotInfo.getKey();
+                EntityRef itemCopy = item.copy();
+                ItemComponent sourceItem = itemCopy.getComponent(ItemComponent.class);
+                sourceItem.stackCount = (byte) slotInfo.getValue().intValue();
+                itemCopy.saveComponent(sourceItem);
+                InventoryUtils.putItemIntoSlot(entity, itemCopy, slot);
+            }
         } else {
             item.destroy();
         }

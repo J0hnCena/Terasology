@@ -15,7 +15,6 @@
  */
 package org.terasology.rendering.nui.layers.ingame.inventory;
 
-import com.google.common.primitives.UnsignedBytes;
 import org.terasology.utilities.Assets;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.characters.CharacterComponent;
@@ -77,7 +76,7 @@ public class TransferItemCursor extends CursorAttachment implements ControlWidge
             public Integer get() {
                 ItemComponent itemComp = getItem().getComponent(ItemComponent.class);
                 if (itemComp != null) {
-                    return UnsignedBytes.toInt(itemComp.stackCount);
+                    return itemComp.stackCount;
                 }
                 return 1;
             }
